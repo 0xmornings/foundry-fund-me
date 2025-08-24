@@ -5,10 +5,10 @@ import {Test, console} from "forge-std/Test.sol";
 import {FundMe} from "../../src/FundMe.sol";
 import {DeployFundMe} from "../../script/DeployFundMe.s.sol";
 
-contract FundMeTest is Test{
+contract FundMeTest is Test {
     FundMe fundMe;
     address USER = makeAddr("user");
-    uint256 constant SEND_VALUE = 0.1 ether; // 
+    uint256 constant SEND_VALUE = 0.1 ether; //
     uint256 constant STARTING_BALANCE = 10 ether;
     uint256 constant GAS_PRICE = 1;
 
@@ -42,9 +42,9 @@ contract FundMeTest is Test{
 
     function testFundUpdatesFundedDataStructure() public {
         vm.prank(USER); // the next TX will be sent by USER
-        
-        fundMe.fund{value: SEND_VALUE} ();
-        
+
+        fundMe.fund{value: SEND_VALUE}();
+
         uint256 amountFunded = fundMe.getAddressToAmountFunded(USER);
         assertEq(amountFunded, SEND_VALUE);
     }
@@ -77,7 +77,6 @@ contract FundMeTest is Test{
         uint256 startingOwnerBalance = fundMe.getOwner().balance;
         uint256 startingFundMeBalance = address(fundMe).balance;
 
-
         // Act
         vm.prank(fundMe.getOwner());
         fundMe.withdraw();
@@ -90,10 +89,10 @@ contract FundMeTest is Test{
     }
 
     function testWithdrawFromMultipleFundersCheaper() public funded {
-         uint160 numberOfFunders = 10;
+        uint160 numberOfFunders = 10;
         uint160 startingFunderIndex = 1;
-        
-        for(uint160 i = startingFunderIndex; i < numberOfFunders; i++) {
+
+        for (uint160 i = startingFunderIndex; i < numberOfFunders; i++) {
             hoax(address(i), SEND_VALUE);
             fundMe.fund{value: SEND_VALUE}();
         }
@@ -109,12 +108,11 @@ contract FundMeTest is Test{
         assert(startingFundMeBalance + startOwnerBalance == fundMe.getOwner().balance);
     }
 
-
     function testWithdrawFromMultipleFunders() public funded {
         uint160 numberOfFunders = 10;
         uint160 startingFunderIndex = 1;
-        
-        for(uint160 i = startingFunderIndex; i < numberOfFunders; i++) {
+
+        for (uint160 i = startingFunderIndex; i < numberOfFunders; i++) {
             hoax(address(i), SEND_VALUE);
             fundMe.fund{value: SEND_VALUE}();
         }
@@ -129,5 +127,4 @@ contract FundMeTest is Test{
         assert(address(fundMe).balance == 0);
         assert(startingFundMeBalance + startOwnerBalance == fundMe.getOwner().balance);
     }
-
 }
